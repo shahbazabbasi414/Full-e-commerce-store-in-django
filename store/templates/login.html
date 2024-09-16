@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+  <div class="p-4 m-4">
+
+    <div class="col-lg-5 mx-auto border rounded p-5 shadow-lg">
+      <h3 class="alert alert-light border rounded text-center py-3 mb-4" style="background: linear-gradient(45deg, #ff6f61, #ff9966); color: white; font-family: 'Roboto', sans-serif; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">Login Here</h3>
+
+      {% if error_message %}
+      <div class="alert alert-danger text-center">
+        <strong>Warning!</strong> Wrong Email or Password</div>
+      {% endif %}
+
+      <form action="/login/" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="return_url" value="{{ return_url }}">
+
+        <!-- Email -->
+        <div class="mb-3">
+          <label for="id_username" class="form-label">Email</label>
+          <input
+            type="text"
+            name="email"
+            id="id_username"
+            class="form-control"
+            placeholder="example@email.com"
+          />
+        </div>
+
+        <!-- Password -->
+        <div class="mb-3">
+          <label for="id_password" class="form-label">Password</label>
+          <input
+            type="password"
+            name="password"
+            id="id_password"
+            class="form-control"
+            placeholder="********"
+          />
+        </div>
+        <input type="hidden" name="return_url" value="{{ return_url }}">
+
+        <div class="form-group">
+          <input class="btn btn-info" type="submit" value="Login">
+          <a href="{% url 'signup' %}" class="btn btn-info">Create An Account</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block footer %}
+{% include "footer.html" %}
+{% endblock %}

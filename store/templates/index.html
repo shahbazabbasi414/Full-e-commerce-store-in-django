@@ -1,0 +1,310 @@
+{% extends "base.html" %}
+{% load cart %}
+{% load custom_filter %}
+{% load static %}
+{% block content %}
+<style>
+  .carousel {
+    height: 30vh; 
+  }
+  .carousel-inner img {
+    height: 100%; 
+    object-fit: cover; 
+  }
+  .product-card img {
+    width: 100%;
+    object-fit: cover;
+  }
+
+
+</style>
+
+<!-- Carousel Section -->
+<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+  </div>
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="{% static 'images/slide/slide-1.jpg' %}" class="d-block w-100" alt="Slider Image 1">
+    </div>
+    <div class="carousel-item">
+      <img src="{% static 'images/slide/slide-2.jpg' %}" class="d-block w-100" alt="Slider Image 2">
+    </div>
+    <div class="carousel-item">
+      <img src="{% static 'images/slide/slide-3.jpg' %}" class="d-block w-100" alt="Slider Image 3">
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+
+<!-- Popular Products Section -->
+<div class="container-fluid mt-5">
+  <div class="row">
+    <div class="col-12 text-center mt-4">
+      <h3 class="text-background-black" >Most Popular Products {{ Customer.first_name }}</h3>
+    </div>
+
+    <!-- Filter Sidebar -->
+    <div class="col-lg-3">
+      <div class="list-group">
+        <a href="/" class="list-group-item list-group-item-action">All Products</a>
+        {% for category in Categories %}
+        <a href="/?category={{ category.id }}" class="list-group-item list-group-item-action">{{ category.name }}</a>
+        {% endfor %}
+      </div>
+    </div>
+
+  
+  <div class="col-lg-9 mx-auto" id="product">
+    <div class="row mx-auto">
+      {% for product in products|slice:":3" %}
+      <div class="card mx-auto mb-3 product-card" id="{{ product.id }}" style="width: 18rem;">
+        <img src="{{ product.image.url }}" alt="Product Image">
+        <div class="card-body">
+          <h5 class="card-title">{{ product.name }}</h5>
+          <p class="card-text">{{ product.category }}</p>
+          <p class="card-text"><b>{{ product.price|currency }}</b></p>
+          <div class="card-footer p-0">
+            {% if product|is_in_cart:cart %}
+            <div class="row no-gutters d-flex align-items-center">
+              <form action="?category={{ request.GET.category }}#{{ product.id }}" method="POST" class="col-2 p-0 m-0">
+                {% csrf_token %}
+                <input type="hidden" name="product" value="{{ product.id }}">
+                <input type="hidden" name="remove" value="{{ product.id }}">
+                <input type="submit" class="btn btn-secondary w-100" value="-">
+              </form>
+              <div class="text-center col">
+                {{ product|cart_quantity:request.session.cart }} in Cart
+              </div>
+              <form action="?category={{ request.GET.category }}#{{ product.id }}" method="POST" class="col-2 p-0 m-0">
+                {% csrf_token %}
+                <input type="hidden" name="product" value="{{ product.id }}">
+                <input type="submit" class="btn btn-secondary w-100" value="+">
+              </form>
+            </div>
+            {% else %}
+            <form action="?category={{ request.GET.category }}#{{ product.id }}" method="post" class="btn-block">
+              {% csrf_token %}
+              <input type="hidden" name="product" value="{{ product.id }}">
+              <input type="submit" class="btn btn-primary w-100" value="Add to Cart">
+            </form>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+</div>
+
+
+
+<!-- ======= About Section ======= -->
+<section id="about" class="mt-5 about">
+  <div class="container">
+
+    <div class="row content">
+      <div class="col-lg-6">
+        <h2>About Us</h2>
+        <h3>Welcome to Zealous, your dedicated partner in customizing top-tier martial arts protective gear, training equipment and sports apparel. </h3>
+      </div>
+      <div class="col-lg-6 pt-4 pt-lg-0">
+        <p>
+          At Zealous, we're driven by a passion for excellence and a commitment to empowering our clients with premium-quality equipment tailored to their unique needs.<br>
+          Zealous Sports combines years of industry experience with a relentless pursuit of innovation. We understand the pivotal role that high-quality gear plays in enhancing performance, ensuring safety, and fostering confidence in every athlete's journey.
+          What sets us apart is our unwavering dedication to craftsmanship and customization. We meticulously design and produce protective gear and sportswear that not only meets but exceeds industry standards. Each product is crafted with precision, utilizing cutting-edge materials and technologies to deliver maximum comfort, durability, and performance.
+          
+        </p>
+        <ul>
+          <li><i class="ri-check-double-line"></i>At Zealous, we believe in fostering a community where dedication, resilience, and passion for sports thrive. Our goal is not just to provide exceptional gear but to be a reliable partner in your journey toward achieving your goals.</li>
+          <li><i class="ri-check-double-line"></i> Join us in embracing excellence, pushing boundaries, and elevating your performance with gear that's as zealous about your success as you are.</li>
+        </ul>
+        <p class="fst-italic">
+          Welcome to Zealous Sports - Where Your Passion Meets Precision.
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section><!-- End About Section -->
+
+{% comment %} process with images {% endcomment %}
+<div class="text-center m-5">
+  <div>
+    <h1 style="font-weight: bold;">PROCESS</h1>
+  </div>
+  <div>
+    <a href="#tab-1">
+      <img src="{% static 'images/process.jpg' %}" alt="" class="img-fluid">
+    </a>
+  </div>
+</div>
+{% comment %}End process with images {% endcomment %}
+    
+
+
+
+
+
+
+<!-- ======= OUR PROCESS ======= -->
+<section id="features" class="m-5 features">
+      <div class="container">
+
+        <div class="section-title">
+          <h2>Our Process</h2>
+          {% comment %} <p>Check Our Process</p> {% endcomment %}
+        </div>
+
+        <div class="row">
+          <div class="col-lg-3">
+            <ul class="nav nav-tabs flex-column">
+              <li class="nav-item">
+                <a class="nav-link active show" data-bs-toggle="tab" href="#tab-1">Explore Products</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab-2">Submit Interest</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab-3">Designing & Material Selection </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab-4">Quotation & Approval</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab-5">Production & Quality Control</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab-6">Packaging & Dispatch </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab-7">Customer Support</a>
+              </li>
+            </ul>
+          </div>
+          <div class="col-lg-9 mt-4 mt-lg-0">
+            <div class="tab-content">
+              <div class="tab-pane active show" id="tab-1">
+                <div class="row">
+                  <div class="col-lg-8 details order-2 order-lg-1">
+                    <h3>Explore Products</h3>
+                    <p class="fst-italic">This is where you browse through our extensive range of offerings to discover options that suit your needs and preferences. You can review detailed descriptions, specifications, and images of our products through our website or by consulting with our knowledgeable team. This exploratory phase allows you to familiarize yourself with the available choices, compare features, and gather information, ensuring you make informed decisions before moving on to the next step of expressing your interest.</p>
+                  </div>
+                  <div class="col-lg-4 text-center order-1 order-lg-2">
+                    <img src="{% static 'images/process/Processs-01.png' %}" alt="" class="img-fluid">
+                  </div>
+                </div>
+              </div>
+              <div class="tab-pane" id="tab-2">
+                <div class="row">
+                  <div class="col-lg-8 details order-2 order-lg-1">
+                    <h3>Submit Interest</h3>
+                    <p class="fst-italic">Here, you formally express your interest in the products by providing details such as quantities, specifications, and any customization requests. This can be done through our website, via email, or directly with our sales team. By submitting your interest, you help us capture all your requirements accurately, allowing us to tailor our proposal and design plan to your needs. This step marks the beginning of our engagement with you, setting the stage for us to move forward with bringing your vision to life.</p>
+                  </div>
+                  <div class="col-lg-4 text-center order-1 order-lg-2">
+                    <img src="{% static 'images/process/Processs-02.png' %}" alt="" class="img-fluid">
+                  </div>
+                </div>
+              </div>
+              <div class="tab-pane" id="tab-3">
+                <div class="row">
+                  <div class="col-lg-8 details order-2 order-lg-1">
+                    <h3>Designing & Material Selection</h3>
+                    <p class="fst-italic">The designing and material selection phase is where your vision comes to life. Our team works closely with you to understand your specific needs, preferences, and any customizations you have in mind. We create detailed design plans and digital models that bring your ideas to reality. During this process, we carefully select materials that match your desired quality, budget, and sustainability goals, ensuring they meet all performance requirements, from durability to aesthetic appeal. This step is critical in aligning the design with your expectations while setting a strong foundation for efficient production and a successful outcome. </p>
+                    <p> We also offer samples for orders meeting certain criteria. Contact our customer support team for more information on sampling.</p>
+                  </div>
+                  <div class="col-lg-4 text-center order-1 order-lg-2">
+                    <img src="{% static 'images/process/Processs-03.png' %}" alt="" class="img-fluid">
+                  </div>
+                </div>
+              </div>
+              <div class="tab-pane" id="tab-4">
+                <div class="row">
+                  <div class="col-lg-8 details order-2 order-lg-1">
+                    <h3>Quotation & Approval</h3>
+                    <p class="fst-italic">Here, we provide you with a detailed quotation that outlines the costs associated with your project, including materials, design, production, and any additional customizations. This transparent breakdown ensures you understand every aspect of the pricing. Once you review the quotation, we address any questions or adjustments you may have, refining the proposal to match your budget and expectations. After your approval, we move forward with confidence, knowing that both parties are aligned on the scope, cost, and timeline of the project.</p>
+                  </div>
+                  <div class="col-lg-4 text-center order-1 order-lg-2">
+                    <img src="{% static 'images/process/Processs-04.png' %}" alt="" class="img-fluid">
+                  </div>
+                </div>
+              </div>
+              <div class="tab-pane" id="tab-5">
+                <div class="row">
+                  <div class="col-lg-8 details order-2 order-lg-1">
+                    <h3>Production & Quality Control</h3>
+                    <p class="fst-italic">During this stage, our skilled team begins manufacturing your product using the approved design and selected materials. We employ state-of-the-art techniques and technology to ensure precision and efficiency in production. Simultaneously, our rigorous quality control procedures are implemented at every step to monitor and maintain the highest standards. Each product undergoes thorough inspections to verify that it meets all specified requirements and quality benchmarks. This meticulous approach ensures that the final product not only meets but exceeds your expectations, ready for delivery with confidence.</p>
+                  </div>
+                  <div class="col-lg-4 text-center order-1 order-lg-2">
+                    <img src="{% static 'images/process/Processs-05.png' %}" alt="" class="img-fluid">
+                  </div>
+                </div>
+              </div>
+              <div class="tab-pane" id="tab-6">
+                <div class="row">
+                  <div class="col-lg-8 details order-2 order-lg-1">
+                    <h3>Packaging & Dispatch</h3>
+                    <p class="fst-italic">During this step, each item is carefully packaged using materials that provide maximum protection, preserving its quality and integrity during transit. We consider the nature of the product, packaging requirements, and any specific instructions to select the most suitable packaging method. Once packed, the products are dispatched through our reliable logistics partners, ensuring timely and secure delivery to your doorstep. This step is crucial to guaranteeing that your order arrives in perfect condition, reflecting the care and precision we put into every stage of the process.</p>
+                  </div>
+                  <div class="col-lg-4 text-center order-1 order-lg-2">
+                    <img src="{% static 'images/process/Processs-06.png' %}" alt="" class="img-fluid">
+                  </div>
+                </div>
+              </div>
+              <div class="tab-pane" id="tab-7">
+                <div class="row">
+                  <div class="col-lg-8 details order-2 order-lg-1">
+                    <h3>Customer Support</h3>
+                    <p class="fst-italic">Even after your order has been delivered, our commitment to you doesn't end there. Our dedicated customer support team is available to assist with any questions, concerns, or feedback you may have. Whether you need guidance on product usage, require after-sales service, or have suggestions for improvement, we are here to help. This step ensures that you are completely satisfied with your experience and that any issues are promptly addressed. At Zealous, we believe in building lasting relationships with our customers, and our customer support is always just a call or message away to ensure your ongoing satisfaction.</p>
+                  </div>
+                  <div class="col-lg-4 text-center order-1 order-lg-2">
+                    <img src="{% static 'images/process/Processs-07.png' %}" alt="" class="img-fluid">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+</section><!-- OUR PROCESS -->
+
+
+
+
+{% comment %} Products {% endcomment %}
+<div class="row m-5">
+  <h1 class="text-center">Our Products</h1>
+  {% for category in Categories %}
+    <div class="col-md-3 mt-3 d-flex justify-content-center">
+      <div class="card text-center category-card">
+        <div class="card-body d-flex flex-column justify-content-center align-items-center">
+          <a href="{% url 'products' %}?category={{ category.id }}" class="card-title list-group-item-action category-text">
+            {{ category.name }}
+          </a>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% comment %} End Products {% endcomment %}
+
+
+
+
+{% endblock %}
+
+{% block footer %}
+{% include "footer.html" %}
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load cart %}
+{% load custom_filter %}
+
+<div class="container">
+  <div class="border rounded p-4 m-4">
+    <p class="display-4 text-center">{{ Customer.first_name }}'s Orders</p>
+    <hr>
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">S No</th>
+            <th scope="col">Image</th>
+            <th scope="col">Name</th>
+            <th scope="col">Price</th>
+            <th scope="col">Date</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Total</th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in orders %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td><img style="height: 50px;" class="rounded-circle" src="{{ order.product.image.url }}" alt=""></td>
+            <td>{{ order.product.name }}</td>
+            <td>{{ order.product.price|currency }}</td>
+            <td>{{ order.date }}</td>
+            <td>{{ order.quantity }}</td>
+            <td>{{ order.quantity|multiply:order.product.price|currency }}</td>
+            <td>
+              <span class="badge 
+              {% if order.status == 'Pending' %}
+                  badge-warning text-black
+              {% elif order.status == 'Dispatched' %}
+                  badge-info text-black
+              {% elif order.status == 'Delivered' %}
+                  badge-primary text-black
+              {% elif order.status == 'Completed' %}
+                  badge-success text-black
+              {% endif %}
+              ">{{ order.status }}</span>
+          </td>
+          
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+{% include "footer.html" %}
+{% endblock %}

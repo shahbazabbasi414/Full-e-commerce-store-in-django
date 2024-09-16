@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load cart %}
+{% load custom_filter %}
+{% load static %}
+{% block content %}
+
+
+
+<h1 class="text-center fw-bold mt-5">About Us</h1>
+
+<!-- Popular Products Section -->
+<div class="container-fluid mt-2">
+  <div class="row">
+    <div class="col-12 text-center mt-4">
+      <h3 class="text-background-black" >Most Popular Products {{ Customer.first_name }}</h3>
+    </div>
+
+    <!-- Filter Sidebar -->
+    <div class="col-lg-3">
+      <div class="list-group">
+        <a href="/about" class="list-group-item list-group-item-action">All Products</a>
+        {% for category in Categories %}
+        <a href="{% url 'about' %}?category={{ category.id }}" class="list-group-item list-group-item-action">{{ category.name }}</a>
+        {% endfor %}
+      </div>
+    </div>
+
+  
+  <div class="col-lg-9 mx-auto" id="product">
+    <div class="row mx-auto">
+      {% for product in products|slice:":3" %}
+      <div class="card mx-auto mb-3 product-card" id="{{ product.id }}" style="width: 18rem;">
+        <img src="{{ product.image.url }}" alt="Product Image">
+        <div class="card-body">
+          <h5 class="card-title">{{ product.name }}</h5>
+          <p class="card-text">{{ product.category }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<section id="about" class="mt-5 about">
+  <div class="container">
+
+    <div class="row content">
+      <div class="col-lg-6">
+        <h2>About Us</h2>
+        <h3>Welcome to Zealous, your dedicated partner in customizing top-tier martial arts protective gear, training equipment and sports apparel. </h3>
+      </div>
+      <div class="col-lg-6 pt-4 pt-lg-0">
+        <p>
+          At Zealous, we're driven by a passion for excellence and a commitment to empowering our clients with premium-quality equipment tailored to their unique needs.<br>
+          Zealous Sports combines years of industry experience with a relentless pursuit of innovation. We understand the pivotal role that high-quality gear plays in enhancing performance, ensuring safety, and fostering confidence in every athlete's journey.
+          What sets us apart is our unwavering dedication to craftsmanship and customization. We meticulously design and produce protective gear and sportswear that not only meets but exceeds industry standards. Each product is crafted with precision, utilizing cutting-edge materials and technologies to deliver maximum comfort, durability, and performance.
+          
+        </p>
+        <ul>
+          <li><i class="ri-check-double-line"></i>At Zealous, we believe in fostering a community where dedication, resilience, and passion for sports thrive. Our goal is not just to provide exceptional gear but to be a reliable partner in your journey toward achieving your goals.</li>
+          <li><i class="ri-check-double-line"></i> Join us in embracing excellence, pushing boundaries, and elevating your performance with gear that's as zealous about your success as you are.</li>
+        </ul>
+        <p class="fst-italic">
+          Welcome to Zealous Sports - Where Your Passion Meets Precision.
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section><!-- End About Section -->
+
+
+
+{% endblock %}
+
+{% block footer %}
+{% include "footer.html" %}
+{% endblock %}

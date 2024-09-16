@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+{% load cart %}
+{% load custom_filter %}
+{% load static %}
+{% block content %}
+
+<!-- End About Fabrics Section -->
+<section id="about" class="mt-5 about">
+  <div class="container">
+
+    <div class="row content">
+      <div class="col-lg-6">
+        <h2>Fabrics</h2>
+        <h3>
+          Selecting the ideal fabric for a custom order is more than just a step in the design process—
+        </h3>
+      </div>
+      <div class="col-lg-6 pt-4 pt-lg-0">
+        <p>
+        </p>
+        <ul>
+          <li><i class="ri-check-double-line"></i>it's a vital choice that significantly affects the finished product. This selection process requires careful consideration of five main factors: fabric type, color, shade, functionality, and texture. This decision can be one of the most challenging parts of designing a custom order, as it is crucial to ensure the customer's satisfaction with the outcome. </li>
+          <li><i class="ri-check-double-line"></i> Whether your business needs just a few pieces of clothing or an entire collection, the ordering process is customized to meet your specific needs. Our team of specialists is always available to help customers choose the perfect fabric. We recognize that this decision can be complicated, and we're here to offer the support you need to achieve the best possible result for your custom order</li>
+        </ul>
+        <p class="fst-italic">
+          Here are some popular fabric options but not limited to those mentioned below.
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section><!-- End About Fabrics Section -->
+{% comment %} Products Fabrics {% endcomment %}
+<div class="container mt-5">
+  <div class="row align-items-center">
+      <!-- Text Section -->
+      <div class="col-md-8">
+          <h2>Cotton / Cotton & Polyster</h2>
+          <p>
+            Cotton fabric is known for its softness, breathability, and natural absorbency, making it an ideal choice for various garments. Available as 100% cotton or blended with polyester for added durability and reduced shrinkage, it offers excellent comfort and ease of care and is available in a wide range of GSMs. We use this versatile fabric specifically for crafting T-shirts and karate suits. Its breathability and flexibility make it perfect for everyday wear in T-shirts, while its strength and softness provide the necessary comfort and movement for karate suits.
+          </p>
+      </div>
+      <!-- Image Section -->
+      <div class="ml-5 col-md-4">
+          <img src="{% static 'images/Fabric Photos/cotton-Poly.jpg' %}" alt="Cotton / Cotton & Polyster" class="img-fluid">
+      </div>
+  </div>
+</div>
+
+<div class="container mt-5">
+  <div class="row  flex-column-reverse flex-md-row align-items-center">
+      <!-- Image Section -->
+      <div class="ml-5 col-md-4">
+        <img src="{% static 'images/Fabric Photos/Cotton-Spandex.webp' %}" alt="otton-Spandex" class="img-fluid">
+      </div>
+      <!-- Text Section -->
+      <div class="col-md-8">
+          <h2>Cotton Spandex</h2>
+          <p>
+            The fabric is composed of both cotton and spandex, which provides it with 2D elasticity, a soft feel, and excellent stretchability. This blend is commonly used to support movement and sports activities, and is commonly found in skin-fit clothing, running gear, and gym wear. It is available in a variety of GSM options.
+          </p>
+      </div>
+  </div>
+</div>
+<div class="container mt-5">
+  <div class="row align-items-center">
+      <!-- Text Section -->
+      <div class="col-md-8">
+          <h2>Micro Interlock</h2>
+          <p>
+            Micro interlock fabric, composed of 100% polyester, offers exceptional softness, durability, and a smooth texture. This fabric provides excellent stretch and flexibility, making it ideal for activewear and athletic activities. It is commonly used in form-fitting clothing, running gear, and gym apparel, and is available in various GSM options to meet different needs.
+          </p>
+      </div>
+      <!-- Image Section -->
+      <div class="ml-5 col-md-4">
+          <img src="{% static 'images/Fabric Photos/micro-interlock.webp' %}" alt="Micro Interlock" class="img-fluid">
+      </div>
+  </div>
+</div>
+
+<div class="container mt-5">
+  <div class="row  flex-column-reverse flex-md-row align-items-center">
+      <!-- Image Section -->
+      <div class="ml-5 col-md-4">
+        <img src="{% static 'images/Fabric Photos/Lycra - 4 Way Stretch.webp' %}" alt="Lycra" class="img-fluid">
+      </div>
+      <!-- Text Section -->
+      <div class="col-md-8">
+          <h2>Lycra</h2>
+          <p>
+            Lycra, a blend of polyester and spandex, is renowned for its remarkable stretch and recovery properties. This combination delivers a fabric that is highly elastic, allowing for a snug, comfortable fit that moves with the body. Lycra's polyester component provides durability and strength, while the spandex offers exceptional flexibility and shape retention. This makes Lycra an excellent choice for activewear, swimwear, and form-fitting clothing, where both comfort and freedom of movement are essential. Additionally, its moisture-wicking properties help keep the wearer dry, enhancing overall performance and comfort during physical activities.
+          </p>
+      </div>
+  </div>
+</div>
+<div class="container mt-5">
+  <div class="row align-items-center">
+      <!-- Text Section -->
+      <div class="col-md-8">
+          <h2>Trinda</h2>
+          <p>
+            Trinda fabric, a blend of polyester and viscose, combines durability with a soft, luxurious feel. The polyester provides strength and resilience, while the viscose adds smoothness and a refined drape. This makes Trinda ideal for a range of applications, including jackets, tracksuits, training tops, and jumpers. Its ability to balance durability with comfort ensures that garments made from Trinda offer both functionality and style, making it a versatile choice for various types of active and casual wear.
+          </p>
+      </div>
+      <!-- Image Section -->
+      <div class="ml-5 col-md-4">
+          <img src="{% static 'images/Fabric Photos/Trinda.webp' %}" alt="Trinda" class="img-fluid">
+      </div>
+  </div>
+</div>
+
+<div class="container mt-5">
+  <div class="row  flex-column-reverse flex-md-row align-items-center">
+      <!-- Image Section -->
+      <div class="ml-5 col-md-4">
+        <img src="{% static 'images/Fabric Photos/Taslan.webp' %}" alt="Taslan" class="img-fluid">
+      </div>
+      <!-- Text Section -->
+      <div class="col-md-8">
+          <h2>Taslan</h2>
+          <p>
+            Taslan fabric is a blend of polyester and nylon, designed for durability, water resistance, and lightweight comfort. The combination of these materials enhances the fabric's strength and texture, making it both tough and comfortable. Taslan is commonly used in outdoor and activewear, such as jackets, pants, and hiking gear, due to its ability to endure harsh conditions while remaining breathable. Its water-resistant properties provide protection against the elements, and its lightweight nature ensures ease of movement. Taslan fabric merges functionality with comfort, making it a popular choice for both everyday and performance-oriented clothing.
+          </p>
+      </div>
+  </div>
+</div>
+<div class="container mt-5">
+  <div class="row align-items-center">
+      <!-- Text Section -->
+      <div class="col-md-8">
+          <h2>Pin Dot Mesh</h2>
+          <p>
+            Pin dot mesh fabric is composed of 100% polyester, offering a lightweight and breathable material with a unique textured pattern of small perforated dots. This design enhances airflow and ventilation, making it ideal for activewear and sports garments. The mesh structure facilitates moisture-wicking, helping to keep the wearer cool and dry during physical activities. Pin dot mesh is commonly used in athletic tops, sports jerseys, and casual wear, combining durability with comfort and a stylish appearance.
+          </p>
+      </div>
+      <!-- Image Section -->
+      <div class="ml-5 col-md-4">
+          <img src="{% static 'images/Fabric Photos/Pin Dot Mesh.webp' %}" alt="Pin Dot Mesh" class="img-fluid">
+      </div>
+  </div>
+</div>
+
+<div class="container mt-5">
+  <div class="row  flex-column-reverse flex-md-row align-items-center">
+      <!-- Image Section -->
+      <div class="ml-5 col-md-4">
+        <img src="{% static 'images/Fabric Photos/Micro-Mesh-2-tuk.webp' %}" alt="Micro Mesh 2-Tuk" class="img-fluid">
+      </div>
+      <!-- Text Section -->
+      <div class="col-md-8">
+          <h2>Micro Mesh 2-Tuk</h2>
+          <p>
+            Made from 100% polyester, it is known for its lightweight, breathable properties and fine mesh structure. The fabric features a double-layered mesh construction, enhancing both durability and comfort. Its superior ventilation and moisture-wicking capabilities make it ideal for high-performance athletic wear and activewear. Often used in sports jerseys, training gear, and casual clothing, micro mesh 2-tuk offers both breathability and flexibility, combining lightweight comfort with robust performance for everyday wear and intensive physical activities.
+          </p>
+      </div>
+  </div>
+</div>
+
+<div class="container mt-5">
+  <div class="row align-items-center">
+      <!-- Text Section -->
+      <div class="col-md-8">
+          <h2>Micro Mesh 3-Tuk</h2>
+          <p>
+            Made from 100% polyester, is recognized for its lightweight, breathable qualities and finely textured mesh structure. Featuring a triple-layered mesh construction, this fabric offers enhanced durability and superior comfort. Its excellent ventilation and moisture-wicking properties make it ideal for high-performance athletic wear and activewear. Commonly used in sports jerseys, training gear, and casual clothing, micro mesh 3-tuk provides both breathability and flexibility, ensuring a combination of lightweight comfort and robust performance for various physical activities.
+          </p>
+      </div>
+      <!-- Image Section -->
+      <div class="ml-5 col-md-4">
+          <img src="{% static 'images/Fabric Photos/Micro-Mesh-3-tuk.webp' %}" alt="Micro-Mesh-3-tuk" class="img-fluid">
+      </div>
+  </div>
+</div>
+
+<div class="container mt-5">
+  <div class="row  flex-column-reverse flex-md-row align-items-center">
+      <!-- Image Section -->
+      <div class="ml-5 col-md-4">
+        <img src="{% static 'images/Fabric Photos/Micro-Mesh-4-tuk.webp' %}" alt="Micro-Mesh-4-tuk" class="img-fluid">
+      </div>
+      <!-- Text Section -->
+      <div class="col-md-8">
+          <h2>Micro Mesh 4-tuk</h2>
+          <p>
+            Micro mesh 4-tuk fabric, crafted from 100% polyester, is celebrated for its ultra-lightweight and highly breathable qualities, featuring a refined mesh design. This fabric boasts a four-layer mesh construction, significantly enhancing durability and comfort. Its exceptional airflow and moisture-wicking properties make it ideal for high-performance sportswear and activewear. Commonly used in sublimated T-shirts, training tops, match wear, and casual apparel, micro mesh 4-tuk provides a blend of breathability and flexibility, offering lightweight comfort and reliable performance for both everyday use and intense physical activities.
+          </p>
+      </div>
+  </div>
+</div>
+
+<div class="container mt-5">
+  <div class="row  align-items-center">
+      <!-- Text Section -->
+      <div class="col-md-8">
+          <h2>Micro Polyster Fleece</h2>
+          <p>
+            Micro fleece, made from 100% polyester, is renowned for its exceptional warmth and softness. This lightweight fabric features a fine, brushed texture that traps air for excellent insulation while remaining breathable. The polyester composition ensures durability and resistance to pilling, making micro fleece ideal for a range of applications. It is commonly used in hoodies, running wear, sweatshirts, and casual apparel, providing a plush, comfortable feel that retains heat efficiently. Combining comfort with functionality, micro fleece is a versatile choice for both everyday wear and outdoor activities.
+          </p>
+      </div>
+      <!-- Image Section -->
+      <div class="ml-5 col-md-4">
+          <img src="{% static 'images/Fabric Photos/micro-interlock.webp' %}" alt="Micro Polyster Fleece" class="img-fluid">
+      </div>
+  </div>
+</div>
+
+<div class="container mt-5">
+  <div class="row  flex-column-reverse flex-md-row align-items-center">
+      <!-- Image Section -->
+      <div class="ml-5 col-md-4">
+        <img src="{% static 'images/Fabric Photos/Cotton Fleece.webp' %}" alt="Cotton Fleece" class="img-fluid">
+      </div>
+      <!-- Text Section -->
+      <div class="col-md-8">
+          <h2>Cotton Fleece</h2>
+          <p>
+            Cotton fleece is a soft, cozy fabric made from 100% cotton, known for its plush texture and excellent warmth. This material features a brushed inner surface that traps air, providing effective insulation while remaining breathable and comfortable. Cotton fleece is highly absorbent, making it ideal for loungewear, casual clothing, and layering pieces. Its natural composition ensures a gentle feel against the skin and minimizes irritation. Commonly used in hoodies, sweatshirts, joggers, and blankets, cotton fleece offers a perfect blend of comfort and practicality, making it a popular choice for both everyday wear and relaxation.
+          </p>
+      </div>
+  </div>
+</div>
+<div class="container mt-5">
+  <div class="row align-items-center">
+      <!-- Text Section -->
+      <div class="col-md-8">
+          <h2>Pique Cotton</h2>
+          <p>
+            Pique cotton is a textured fabric made from 100% cotton, distinguished by its unique pattern of raised, woven diamonds or squares. This fabric is known for its durability, breathability, and subtle sheen, making it a popular choice for casual and formal wear. The distinctive texture of pique cotton adds a sophisticated touch while providing excellent moisture-wicking properties, keeping the wearer comfortable and dry. It is commonly used in polo shirts, sportswear, and casual jackets, offering a blend of style and functionality. Pique cotton's classic appearance and comfortable feel make it a versatile and favored option for various types of clothing.
+          </p>
+      </div>
+      <!-- Image Section -->
+      <div class="ml-5 col-md-4">
+          <img src="{% static 'images/Fabric Photos/pique cotton.jpg' %}" alt="Pique Cotton" class="img-fluid">
+      </div>
+  </div>
+</div>
+
+{% comment %} End Products Fabrics {% endcomment %}
+
+{% endblock %}
+
+{% block footer %}
+{% include "footer.html" %}
+{% endblock %}

@@ -8,6 +8,9 @@ class Product(models.Model):
     category= models.ForeignKey(Category, on_delete=models.CASCADE, default=1)
     description = models.CharField(max_length=1000, default='')
     image = models.ImageField(upload_to='products/')
+    image2 = models.ImageField(upload_to='products/', null=True, blank=True)
+    image3 = models.ImageField(upload_to='products/', null=True, blank=True)
+
     
     @staticmethod
     def get_Products_by_id(ids):

@@ -19,6 +19,7 @@ class Order(models.Model):
     date = models.DateTimeField(default=datetime.datetime.today)
     address = models.CharField(max_length=50, default='', blank=True)
     phone = models.CharField(max_length=11, default='', blank=True)
+    detail = models.CharField(max_length=500, default='', blank=True) 
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
 
     def __str__(self):

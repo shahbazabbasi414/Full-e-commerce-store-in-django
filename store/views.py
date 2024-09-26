@@ -139,32 +139,6 @@ def Cart(request):
         customer = Customer.objects.filter(id=request.session['customer_id']).first()
     return render(request, 'cart.html', {'products': products, 'cart': cart, 'Customer': customer})
 
-class checkOut(View):
-    def post(self, request):
-        address = request.POST.get('address')
-        phone = request.POST.get('phone')
-        customer_id = request.session.get('customer_id') 
-        cart = request.session.get('cart', {})
-        
-        # Convert product IDs to integers
-        product_ids = [int(id) for id in cart.keys()]
-        products = Product.get_Products_by_id(product_ids)
-        
-        print(address, phone, customer_id, cart, products)
-        
-        for product in products:
-            order = Order(
-                customer=Customer(id=customer_id),
-                product=product,
-                price=product.price,
-                address=address,
-                phone=phone,
-                quantity=cart.get(str(product.id))
-            )
-            order.placeOrder()
-            
-        request.session['cart']= {}
-        return redirect('cart')
 
 class OrderView(View):
     def get(self, request):
@@ -181,9 +155,11 @@ class checkOut(View):
     def post(self, request):
         address = request.POST.get('address')
         phone = request.POST.get('phone')
+        detail = request.POST.get('detail')
         return_url = request.POST.get('return_url', 'cart')
         customer_id = request.session.get('customer_id')
         cart = request.session.get('cart', {})
+        
 
         if not customer_id:
             return redirect(f'/login/?return_url={return_url}')
@@ -199,6 +175,7 @@ class checkOut(View):
                 price=product.price,
                 address=address,
                 phone=phone,
+                detail=detail,
                 quantity=cart.get(str(product.id))
             )
             order.placeOrder()

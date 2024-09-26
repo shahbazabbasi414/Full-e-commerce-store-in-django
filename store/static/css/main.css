@@ -87,6 +87,32 @@ h6 {
 }
 
 /* Badge Styling */
+.badge-warning {
+  background-color: #00ffea; /* Red color for badge */
+  color: #fff;
+}
+/* Badge Styling */
+.badge-info {
+  background-color: #ff0000; /* Red color for badge */
+  color: #fff;
+}
+
+
+/* Badge Styling */
+.badge-primary {
+  background-color: #00b3ff; /* Red color for badge */
+  color: #fff;
+}
+
+
+/* Badge Styling */
+.badge-success {
+  background-color: #44ff00; /* Red color for badge */
+  color: #fff;
+}
+
+
+/* Badge Styling */
 .badge-info {
   background-color: #ff0000; /* Red color for badge */
   color: #fff;

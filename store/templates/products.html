@@ -6,14 +6,23 @@
 <div class="container-fluid mt-5">
   <div class="row">
     <!-- Filter -->
-    <div class="col-lg-3 mx-auto">
-      <div class="list-group">
-        <a href="/products" class="list-group-item list-group-item-action">All Product</a>
-        {% for category in Categories %}
-        <a href="{% url 'products' %}?category={{ category.id }}" class="list-group-item list-group-item-action">{{ category.name }}</a>
-        {% endfor %}
+    <div class="col-lg-3">
+      <div class="sidebar">
+        <button class="btn btn-primary1 d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#filterMenu" aria-expanded="false" aria-controls="filterMenu">
+          Filter Products
+        </button>
+        <div class="collapse d-lg-block" id="filterMenu">
+          <div class="list-group">
+            <a href="/products" class="list-group-item list-group-item-action">All Products</a>
+            {% for category in Categories %}
+            <a href="{% url 'products' %}?category={{ category.id }}" class="list-group-item list-group-item-action">{{ category.name }}</a>
+            {% endfor %}
+          </div>
+        </div>
       </div>
     </div>
+    
+        <!-- End Filter -->
       <div class="col-lg-9 mx-auto" id="product">
         <div class="row mx-auto">
           {% for product in products %}

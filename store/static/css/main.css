@@ -429,3 +429,56 @@ h6 {
     transform: rotate(360deg);
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+/* Product page and  Button  */
+.btn-primary1 {
+  background-color: red !important;
+  color: black !important;
+  font-weight: bold;
+  border: none;
+}
+
+.btn-primary1:hover {
+  background-color: darkred !important;
+}
+
+
+
+
+.sidebar {
+  padding: 15px;
+  background-color: #f8f9fa;
+}
+
+@media (max-width: 991px) {
+  .sidebar {
+    margin-bottom: 20px;
+
+  }
+
+  .collapse:not(.show) {
+    display: none;
+  }
+
+  .btn {
+    width: 100%;
+    margin-bottom: 10px;
+
+  }
+}
+
+@media (min-width: 992px) {
+  .sidebar .collapse {
+    display: block !important;
+  }
+}

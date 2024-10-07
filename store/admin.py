@@ -4,6 +4,14 @@ from .models.category import Category
 from .models.customer import Customer
 from .models.orders import Order
 
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'parent')
+    list_filter = ('parent',)
+    
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.select_related('parent')
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'price', 'category', 'description', 'image', 'image2', 'image3')
@@ -11,7 +19,8 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name',)
+    list_display = ('name', 'parent',)
+    list_filter = ('parent',)
 
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):

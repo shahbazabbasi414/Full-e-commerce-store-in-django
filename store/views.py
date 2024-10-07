@@ -185,7 +185,6 @@ class checkOut(View):
 
 
 def products(request):
-    # return render(request, 'Products.html')
     if request.method == "POST":
         product_id = request.POST.get('product')
         remove = request.POST.get('remove')
@@ -202,12 +201,11 @@ def products(request):
             else:
                 cart[product_id] = quantity + 1
 
-            # If the quantity is 0, remove the product from the cart
             if cart.get(product_id) == 0:
                 cart.pop(product_id)
 
         request.session['cart'] = cart
-        return redirect('products')  # Update the redirect to point to the correct URL name
+        return redirect('products')
 
     else:  # Handle GET request
         products = None
@@ -215,7 +213,13 @@ def products(request):
         category_id = request.GET.get('category')
 
         if category_id:
-            products = Product.get_all_products_by_id(category_id)
+            # Get the selected category and its child categories
+            selected_category = Category.objects.filter(id=category_id).first()
+            if selected_category:
+                # Get all products from this category and its child categories
+                child_categories = selected_category.get_children()  # Get all child categories
+                all_categories = [selected_category] + list(child_categories)
+                products = Product.objects.filter(category__in=all_categories)
         else:
             products = Product.get_all_products()
 
@@ -225,15 +229,18 @@ def products(request):
 
         cart = request.session.get('cart', {})
 
+        # Group categories to filter out only parent categories and their children
+        parent_categories = categories.filter(parent__isnull=True)
+
         data = {
-            'Categories': categories,
+            'Categories': parent_categories,
             'products': products,
             'Customer': customer,
-            'cart': cart  # Add cart to the context
+            'cart': cart
         }
 
         return render(request, 'Products.html', data)
-    
+
 
 
 

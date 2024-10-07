@@ -482,3 +482,42 @@ h6 {
     display: block !important;
   }
 }
+
+
+/* Style for the dropdown arrow */
+.arrow {
+  color: #ff0000;
+  font-size: 0.8em; 
+  margin-left: 5px;
+  transition: transform 0.2s;
+  float: right;
+}
+
+
+/* Rotate the arrow on hover */
+.category-container:hover .arrow {
+  transform: rotate(180deg); /* Rotate the arrow when hovered */
+}
+
+/* Maintain the existing styles */
+.child-category,
+.subchild-category {
+  display: none;
+}
+
+/* Show child categories on hover */
+.category-container:hover .child-category {
+  display: block;
+  margin-left: 20px;
+}
+
+/* Show subchild categories on hover */
+.child-category-container:hover .subchild-category {
+  display: block;
+  margin-left: 40px;
+}
+
+/* Optionally, you can add some transition effects */
+.category-container, .child-category-container {
+  transition: all 0.3s ease;
+}

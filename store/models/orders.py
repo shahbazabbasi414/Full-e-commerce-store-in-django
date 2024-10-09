@@ -23,7 +23,7 @@ class Order(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
 
     def __str__(self):
-        return f'Order {self.id} by {self.customer}'
+        return f'Order {self.id}: {self.product.name} by {self.customer}'
 
     def placeOrder(self):
         self.save()

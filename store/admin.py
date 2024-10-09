@@ -3,6 +3,14 @@ from .models.product import Product
 from .models.category import Category
 from .models.customer import Customer
 from .models.orders import Order
+from .models.contact import Contact
+from .models.material import Material
+from .models.size import Size
+from .models.customization import Customization
+from .models.type import Type
+from .models.color import Color
+from .models.fabric import Fabric
+from .models.gsm import GSM
 
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'parent')
@@ -14,8 +22,10 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'price', 'category', 'description', 'image', 'image2', 'image3')
+    list_display = ('name', 'price', 'category', 'description', 'image')
     search_fields = ('name', 'description')
+    filter_horizontal = ('materials', 'sizes', 'customizations', 'types', 'colors', 'fabrics', 'gsms')
+
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -31,3 +41,13 @@ class CustomerAdmin(admin.ModelAdmin):
 class OrderAdmin(admin.ModelAdmin):
     list_display = ('product', 'customer', 'quantity', 'price', 'date', 'address', 'phone','detail', 'status')
     search_fields = ('product__name', 'customer__first_name', 'customer__last_name', 'address', 'phone', 'status')
+
+
+admin.site.register(Contact)
+admin.site.register(Material)
+admin.site.register(Size)
+admin.site.register(Customization)
+admin.site.register(Type)
+admin.site.register(Color)
+admin.site.register(Fabric)
+admin.site.register(GSM)

@@ -1,80 +1,122 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load static %}
 {% load custom_filter %}
 {% load custom_filters %}
 
 {% block content %}
-<section class="py-5">
-  <div class="container px-4 px-lg-5 my-5">
-    <div class="row gx-4 gx-lg-5 align-items-center">
-      <div class="col-md-6">
-        <div id="productImageCarousel" class="carousel slide" data-bs-ride="carousel">
-          <div class="carousel-inner">
-            <div class="carousel-item active">
-              <img class="d-block w-100" src="{{ product.image.url }}" alt="{{ product.name }}">
-            </div>
-            {% if product.image2 %}
-            <div class="carousel-item">
-              <img class="d-block w-100" src="{{ product.image2.url }}" alt="{{ product.name }}">
-            </div>
-            {% endif %}
-            {% if product.image3 %}
-            <div class="carousel-item">
-              <img class="d-block w-100" src="{{ product.image3.url }}" alt="{{ product.name }}">
-            </div>
-            {% endif %}
-          </div>
-          <a class="carousel-control-prev" href="#productImageCarousel" role="button" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-          </a>
-          <a class="carousel-control-next" href="#productImageCarousel" role="button" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-          </a>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <h1 class="display-5 fw-bolder">{{ product.name }}</h1>
-        <div class="fs-5 mb-2">
-          <span>{{ product.price|currency }}</span>
-        </div>
-        <div class="fs-5 mb-3">
-          <span><strong>{{ product.category }}</strong></span>
-        </div>
-        <p class="lead">{{ product.description }}</p>
-              {% if product|is_in_cart:cart %}
-              <div class="row no-gutters d-flex align-items-center">
-                <form action="{% url 'update_cart' %}" method="POST" class="col-2 p-0 m-0">
-                  {% csrf_token %}
-                  <input hidden type="text" name="product" value="{{ product.id }}">
-                  <input hidden type="text" name="remove" value="{{ product.id }}">
-                  <input type="submit" class="btn btn-secondary w-100" value="-">
-                </form>
-                <div class="text-center col">
-                  {{ product|cart_quantity:request.session.cart }} in Cart
-                </div>
-                <form action="{% url 'update_cart' %}" method="POST" class="col-2 p-0 m-0">
-                  {% csrf_token %}
-                  <input hidden type="text" name="product" value="{{ product.id }}">
-                  <input type="submit" class="btn btn-secondary w-100" value="+">
-                </form>
+  <section class="py-5">
+    <div class="container px-4 px-lg-5 my-5">
+      <div class="row gx-4 gx-lg-5 align-items-center">
+        <div class="col-md-6">
+          <div id="productImageCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <img class="d-block w-100" src="{{ product.image.url }}" alt="{{ product.name }}" />
               </div>
-              {% else %}
-              <form action="{% url 'update_cart' %}" method="POST" class="btn-block">
-                {% csrf_token %}
-                <input type="hidden" name="product" value="{{ product.id }}">
-                <input type="submit" class="btn btn-primary w-100" value="Add to Cart">
-              </form>
+              {% if product.image2 %}
+                <div class="carousel-item">
+                  <img class="d-block w-100" src="{{ product.image2.url }}" alt="{{ product.name }}" />
+                </div>
               {% endif %}
+              {% if product.image3 %}
+                <div class="carousel-item">
+                  <img class="d-block w-100" src="{{ product.image3.url }}" alt="{{ product.name }}" />
+                </div>
+              {% endif %}
+            </div>
+            <a class="carousel-control-prev" href="#productImageCarousel" role="button" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#productImageCarousel" role="button" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </a>
           </div>
+        </div>
+        <div class="col-md-6">
+          <h1 class="display-5 fw-bolder">{{ product.name }}</h1>
+          <div class="fs-5 mb-2">
+            <span>{{ product.price|currency }}</span>
+          </div>
+          <div class="fs-5 mb-3">
+            <span><strong>{{ product.category }}</strong></span>
+          </div>
+
+            <div>
+              <h2>Available Colors:</h2>
+                <ul>
+                  {% for color in color %}
+                    <li>{{ color }}</li>
+                  {% endfor %}
+                </ul>
+
+                <h2>Available Materials:</h2>
+                <ul>
+                  {% for material in material %}
+                    <li>{{ material }}</li>
+                  {% endfor %}
+                </ul>
+
+                <h2>Available Sizes:</h2>
+                <ul>
+                  {% for size in size %}
+                    <li>{{ size }}</li>
+                  {% endfor %}
+                </ul>
+
+                <h2>Available Customizations:</h2>
+                <ul>
+                  {% for customization in customization %}
+                    <li>{{ customization }}</li>
+                  {% endfor %}
+                </ul>
+
+                <h2>Available Types:</h2>
+                <ul>
+                  {% for type in type %}
+                    <li>{{ type }}</li>
+                  {% endfor %}
+                </ul>
+
+                <h2>Available GSMs:</h2>
+                <ul>
+                  {% for gsm in gsm %}
+                    <li>{{ gsm }}</li>
+                  {% endfor %}
+                </ul>
+
+            </div>
+
+          <p class="lead">{{ product.description }}</p>
+          {% if product|is_in_cart:cart %}
+            <div class="row no-gutters d-flex align-items-center">
+              <form action="{% url 'update_cart' %}" method="POST" class="col-2 p-0 m-0">
+                {% csrf_token %}
+                <input hidden type="text" name="product" value="{{ product.id }}" />
+                <input hidden type="text" name="remove" value="{{ product.id }}" />
+                <input type="submit" class="btn btn-secondary w-100" value="-" />
+              </form>
+              <div class="text-center col">{{ product|cart_quantity:request.session.cart }} in Cart</div>
+              <form action="{% url 'update_cart' %}" method="POST" class="col-2 p-0 m-0">
+                {% csrf_token %}
+                <input hidden type="text" name="product" value="{{ product.id }}" />
+                <input type="submit" class="btn btn-secondary w-100" value="+" />
+              </form>
+            </div>
+          {% else %}
+            <form action="{% url 'update_cart' %}" method="POST" class="btn-block">
+              {% csrf_token %}
+              <input type="hidden" name="product" value="{{ product.id }}" />
+              <input type="submit" class="btn btn-primary w-100" value="Add to Cart" />
+            </form>
+          {% endif %}
+        </div>
       </div>
-  </div>
-</section>
-
-
+    </div>
+  </section>
 {% endblock %}
 
 {% block footer %}
-{% include "footer.html" %}
+  {% include 'footer.html' %}
 {% endblock %}

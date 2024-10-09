@@ -11,6 +11,7 @@ from store.models.orders import Order
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseBadRequest
 from django.conf.urls import handler404
+from .models.contact import Contact
 
 
 
@@ -31,7 +32,6 @@ class index(View):
             else:
                 cart[product_id] = quantity + 1
 
-            # If the quantity is 0, remove the product from the cart
             if cart.get(product_id) == 0:
                 cart.pop(product_id)
 
@@ -41,12 +41,9 @@ class index(View):
     def get(self, request):
         products = None
         categories = Category.get_all_category()
-        category_id = request.GET.get('category')
+        parent_categories = categories.filter(parent__isnull=True)
 
-        if category_id:
-            products = Product.get_all_products_by_id(category_id)
-        else:
-            products = Product.get_all_products()
+        products = Product.objects.filter(category__in=parent_categories)
 
         customer = None
         if 'customer_id' in request.session:
@@ -55,13 +52,15 @@ class index(View):
         cart = request.session.get('cart', {})
 
         data = {
-            'Categories': categories,
-            'products': products,
+            'Categories': parent_categories, 
+            'products': products, 
             'Customer': customer,
-            'cart': cart  # Add cart to the context
+            'cart': cart 
         }
 
         return render(request, 'index.html', data)
+
+
 
 def signup(request):
     if request.method == 'POST':
@@ -73,8 +72,9 @@ def signup(request):
         password = postData.get('password')
         re_password = postData.get('re_password')
 
+        # Validate input
         if not all([first_name, last_name, phone, email, password, re_password]):
-            return render(request,'signup.html', {'All_Required': True})
+            return render(request, 'signup.html', {'All_Required': True})
 
         if password != re_password:
             return render(request, 'signup.html', {'password_mismatch': True})
@@ -82,6 +82,7 @@ def signup(request):
         if Customer.objects.filter(email=email).exists() or Customer.objects.filter(phone=phone).exists():
             return render(request, 'signup.html', {'email_phone_match': True})
 
+        # Create new customer
         customer = Customer(
             first_name=first_name,
             last_name=last_name,
@@ -94,8 +95,16 @@ def signup(request):
         request.session['email'] = email
 
         return redirect('index')
+    
     else:
-        return render(request, 'signup.html')
+        categories = Category.get_all_category()
+        parent_categories = categories.filter(parent__isnull=True)  # Only parent categories
+
+        data = {
+            'Categories': parent_categories  # Pass parent categories to the template
+        }
+
+        return render(request, 'signup.html', data)
 
 
 def login_view(request):
@@ -121,8 +130,14 @@ def login_view(request):
             return render(request, 'login.html', {'error_message': True, 'return_url': return_url}) 
 
     else:
+        categories = Category.get_all_category()
+        parent_categories = categories.filter(parent__isnull=True)
+        
         return_url = request.GET.get('return_url', '/')
-        return render(request, 'login.html', {'return_url': return_url})
+        return render(request, 'login.html', {
+            'Categories': parent_categories,
+            'return_url': return_url
+            })
 
 
 def logout_view(request):
@@ -134,22 +149,26 @@ def Cart(request):
     cart = request.session.get('cart', {})
     ids = list(cart.keys())
     products = Product.get_Products_by_id(ids)
+    categories = Category.get_all_category()
+    parent_categories = categories.filter(parent__isnull=True)
     customer = None
     if 'customer_id' in request.session:
         customer = Customer.objects.filter(id=request.session['customer_id']).first()
-    return render(request, 'cart.html', {'products': products, 'cart': cart, 'Customer': customer})
+    return render(request, 'cart.html', {'products': products, 'cart': cart, 'Customer': customer, 'Categories': parent_categories,})
 
 
 class OrderView(View):
     def get(self, request):
         customer_id = request.session.get('customer_id')
+        categories = Category.get_all_category()
+        parent_categories = categories.filter(parent__isnull=True)
         if not customer_id:
             return redirect('login')
         customer = Customer.objects.get(id=customer_id)
         orders = Order.get_order_by_customer(customer)
         print(orders)
 
-        return render(request, 'order.html', {'orders': orders, 'Customer': customer})
+        return render(request, 'order.html', {'orders': orders, 'Customer': customer, 'Categories': parent_categories,})
 
 class checkOut(View):
     def post(self, request):
@@ -163,8 +182,6 @@ class checkOut(View):
 
         if not customer_id:
             return redirect(f'/login/?return_url={return_url}')
-        
-        # Proceed with checkout if customer is logged in
         product_ids = [int(id) for id in cart.keys()]
         products = Product.get_Products_by_id(product_ids)
 
@@ -182,6 +199,7 @@ class checkOut(View):
 
         request.session['cart'] = {}
         return redirect(return_url)
+    
 
 
 def products(request):
@@ -207,17 +225,15 @@ def products(request):
         request.session['cart'] = cart
         return redirect('products')
 
-    else:  # Handle GET request
+    else:
         products = None
         categories = Category.get_all_category()
         category_id = request.GET.get('category')
 
         if category_id:
-            # Get the selected category and its child categories
             selected_category = Category.objects.filter(id=category_id).first()
             if selected_category:
-                # Get all products from this category and its child categories
-                child_categories = selected_category.get_children()  # Get all child categories
+                child_categories = selected_category.get_children()
                 all_categories = [selected_category] + list(child_categories)
                 products = Product.objects.filter(category__in=all_categories)
         else:
@@ -229,7 +245,6 @@ def products(request):
 
         cart = request.session.get('cart', {})
 
-        # Group categories to filter out only parent categories and their children
         parent_categories = categories.filter(parent__isnull=True)
 
         data = {
@@ -243,15 +258,19 @@ def products(request):
 
 
 
-
-# def cartPage(request):
-#     return render(request, 'cartPage.html')
-
-
 def cartPage(request, product_id):
     product = get_object_or_404(Product, id=product_id)
+    
+    materials = product.materials.all()
+    sizes = product.sizes.all()
+    customizations = product.customizations.all()
+    types = product.types.all()
+    colors = product.colors.all()
+    gsms = product.gsms.all()
+    
     cart = request.session.get('cart', {})
     categories = Category.get_all_category()
+    parent_categories = categories.filter(parent__isnull=True)
     customer = None
     if 'customer_id' in request.session:
         customer = Customer.objects.filter(id=request.session['customer_id']).first()
@@ -259,8 +278,15 @@ def cartPage(request, product_id):
     return render(request, 'product-details-page.html', {
         'product': product,
         'cart': cart,
-        'Categories': categories,
-        'Customer': customer
+        'Categories': parent_categories,
+        'Customer': customer,
+        'color':colors,
+        'material':materials,
+        'size':sizes,
+        'customization':customizations,
+        'type':types,
+        'gsms':gsms
+        
     })
 
 
@@ -289,12 +315,11 @@ def update_cart(request):
     else:
         return HttpResponseBadRequest("Invalid request method")
     
-    
-    
 
 def about(request):
     categories = Category.get_all_category()
     category_id = request.GET.get('category')
+    parent_categories = categories.filter(parent__isnull=True)
     products = None
 
     if category_id:
@@ -309,7 +334,7 @@ def about(request):
     cart = request.session.get('cart', {})
 
     context = {
-        'Categories': categories,
+        'Categories': parent_categories,
         'products': products,
         'Customer': customer,
         'cart': cart
@@ -318,10 +343,9 @@ def about(request):
     return render(request, 'about.html', context)
 
 
-
-
 def process(request):
     categories = Category.get_all_category()
+    parent_categories = categories.filter(parent__isnull=True)
     category_id = request.GET.get('category')
     products = None
 
@@ -337,7 +361,7 @@ def process(request):
     cart = request.session.get('cart', {})
 
     context = {
-        'Categories': categories,
+        'Categories': parent_categories,
         'products': products,
         'Customer': customer,
         'cart': cart
@@ -348,6 +372,7 @@ def process(request):
 
 def fabric(request):
     categories = Category.get_all_category()
+    parent_categories = categories.filter(parent__isnull=True)
     category_id = request.GET.get('category')
     products = None
 
@@ -363,7 +388,7 @@ def fabric(request):
     cart = request.session.get('cart', {})
 
     context = {
-        'Categories': categories,
+        'Categories': parent_categories,
         'products': products,
         'Customer': customer,
         'cart': cart
@@ -372,36 +397,28 @@ def fabric(request):
     return render(request, 'fabric.html', context)
 
 def contact(request):
+    if request.method=='POST':
+        contact = Contact()
+        name=request.POST.get('name')
+        email=request.POST.get('email')
+        subject=request.POST.get('subject')
+        message=request.POST.get('message')
+        contact = Contact(name=name, email=email, subject=subject, message=message)
+        contact.save()
+        return redirect('contact')
+    
     categories = Category.get_all_category()
-    category_id = request.GET.get('category')
-    products = None
-
-    if category_id:
-        products = Product.get_all_products_by_id(category_id)
-    else:
-        products = Product.get_all_products()
-
-    customer = None
-    if 'customer_id' in request.session:
-        customer = Customer.objects.filter(id=request.session['customer_id']).first()
-
-    cart = request.session.get('cart', {})
-
+    parent_categories = categories.filter(parent__isnull=True)
     context = {
-        'Categories': categories,
+        'Categories': parent_categories,
         'products': products,
-        'Customer': customer,
-        'cart': cart
     }
-
     return render(request, 'contact.html', context)
 
 
 def support(request):
-    return render(request,'support.html')
-
-def customization(request):
     categories = Category.get_all_category()
+    parent_categories = categories.filter(parent__isnull=True)
     category_id = request.GET.get('category')
     products = None
 
@@ -417,7 +434,32 @@ def customization(request):
     cart = request.session.get('cart', {})
 
     context = {
-        'Categories': categories,
+        'Categories': parent_categories,
+        'products': products,
+        'Customer': customer,
+        'cart': cart
+    }
+    return render(request,'support.html',context )
+
+def customization(request):
+    categories = Category.get_all_category()
+    parent_categories = categories.filter(parent__isnull=True)
+    category_id = request.GET.get('category')
+    products = None
+
+    if category_id:
+        products = Product.get_all_products_by_id(category_id)
+    else:
+        products = Product.get_all_products()
+
+    customer = None
+    if 'customer_id' in request.session:
+        customer = Customer.objects.filter(id=request.session['customer_id']).first()
+
+    cart = request.session.get('cart', {})
+
+    context = {
+        'Categories': parent_categories,
         'products': products,
         'Customer': customer,
         'cart': cart
@@ -426,10 +468,3 @@ def customization(request):
     return render(request, 'customization.html', context)
 
 
-
-# Custom 404 handler function
-def custom_404_view(request, exception):
-    return render(request, '404.html', status=404)
-
-# Register the custom 404 view
-handler404 = custom_404_view

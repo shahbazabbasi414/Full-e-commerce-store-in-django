@@ -16,42 +16,57 @@
             <th scope="col">Name</th>
             <th scope="col">Price</th>
             <th scope="col">Quantity</th>
+            <th scope="col">Color</th>
+            <th scope="col">Material</th>
+            <th scope="col">Size</th>
+            <th scope="col">Customization</th>
+            <th scope="col">Type</th>
+            <th scope="col">GSM</th>
             <th scope="col">Total</th>
           </tr>
         </thead>
         <tbody>
-          {% if products %}
-          {% for product in products %}
-          <tr>
-            <td>{{ forloop.counter }}</td>
-            <td><img style="height: 50px;" class="rounded-circle" src="{{ product.image.url }}" alt=""></td>
-            <td>{{ product.name }}</td>
-            <td>{{ product.price | currency }}</td>
-            <td>{{ product | cart_quantity:cart }}</td>
-            <td>{{ product | price_total:cart | currency }}</td>
-          </tr>
-          {% endfor %}
+          {% if cart_items %}
+            {% for item in cart_items %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td><img style="height: 50px;" class="rounded-circle" src="{{ item.product.image.url }}" alt=""></td>
+              <td>{{ item.product.name }}</td>
+              <td>{{ item.product.price | currency }}</td>
+              <td>{{ item.quantity }}</td>
+
+              <!-- Conditionally render each attribute only if it exists -->
+              <td>{% if item.color %}{{ item.color }}{% else %}N/A{% endif %}</td>
+              <td>{% if item.material %}{{ item.material }}{% else %}N/A{% endif %}</td>
+              <td>{% if item.size %}{{ item.size }}{% else %}N/A{% endif %}</td>
+              <td>{% if item.customization %}{{ item.customization }}{% else %}N/A{% endif %}</td>
+              <td>{% if item.type %}{{ item.type }}{% else %}N/A{% endif %}</td>
+              <td>{% if item.gsm %}{{ item.gsm }}{% else %}N/A{% endif %}</td>
+
+              <td>{{ item.quantity|multiply:item.product.price|currency }}</td>
+            </tr>
+            {% endfor %}
           {% else %}
-          <tr>
-            <td colspan="6" class="text-center">Your cart is empty.</td>
-          </tr>
+            <tr>
+              <td colspan="12" class="text-center">Your cart is empty.</td>
+            </tr>
           {% endif %}
         </tbody>
-        {% if products %}
+        
+        {% if cart_total %}
         <tfoot>
           <tr>
-            <th class="text-center" colspan="5">Total</th>
-            <th>{{ products | total_cart_price:cart | currency }}</th>
+            <th class="text-center" colspan="12">Total: {{ cart_total | currency }}</th>
           </tr>
         </tfoot>
         {% endif %}
       </table>
       <hr>
       <div class="m-3 p-3">
-        {% if products %}
+        {% if cart_items %}
         <a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-primary border rounded col-lg-3 float-end">Check out {{ Customer.first_name }}</a>
         {% else %}
-        <a href="#" class="btn btn-secondary border rounded col-lg-3 float-end disabled">{{ Customer.first_name }} Please Buy </a>
+        <a href="#" class="btn btn-secondary border rounded col-lg-3 float-end disabled">{{ Customer.first_name }} Please Buy Something</a>
         {% endif %}
       </div>
     </div>
@@ -86,6 +101,18 @@
                 <label for="detail" class="form-label">Detail <span class="text-danger">*</span></label>
                 <textarea name="detail" id="detail" class="form-control" rows="4" required></textarea>
             </div>
+
+            <!-- Include hidden fields for product attributes -->
+            {% for item in cart_items %}
+              <input type="hidden" name="color_{{ forloop.counter }}" value="{{ item.color }}">
+              <input type="hidden" name="material_{{ forloop.counter }}" value="{{ item.material }}">
+              <input type="hidden" name="size_{{ forloop.counter }}" value="{{ item.size }}">
+              <input type="hidden" name="customization_{{ forloop.counter }}" value="{{ item.customization }}">
+              <input type="hidden" name="type_{{ forloop.counter }}" value="{{ item.type }}">
+              <input type="hidden" name="gsm_{{ forloop.counter }}" value="{{ item.gsm }}">
+              <input type="hidden" name="quantity_{{ forloop.counter }}" value="{{ item.quantity }}">
+              <input type="hidden" name="product_id_{{ forloop.counter }}" value="{{ item.product.id }}">
+            {% endfor %}
             
             <input type="submit" class="btn btn-outline-info float-end" value="Check out">
         </form>

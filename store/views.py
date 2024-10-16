@@ -9,7 +9,7 @@ from django.contrib.auth import logout
 from store.models.product import Product
 from store.models.orders import Order
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseBadRequest, JsonResponse
 from django.conf.urls import handler404
 from .models.contact import Contact
 
@@ -24,15 +24,16 @@ class index(View):
         if product_id:
             quantity = cart.get(product_id, 0)
 
-            if remove:
+            if remove:  # If the remove flag is set
                 if quantity <= 1:
                     cart.pop(product_id)
                 else:
                     cart[product_id] = quantity - 1
-            else:
+            else:  # Increment quantity
                 cart[product_id] = quantity + 1
 
-            if cart.get(product_id) == 0:
+            # Ensure cart item is removed if quantity is 0
+            if product_id in cart and cart[product_id] <= 0:
                 cart.pop(product_id)
 
         request.session['cart'] = cart
@@ -147,14 +148,49 @@ def logout_view(request):
 
 def Cart(request):
     cart = request.session.get('cart', {})
-    ids = list(cart.keys())
-    products = Product.get_Products_by_id(ids)
+    # print("Cart data:", cart)
+    # return JsonResponse({"status": "POST data received", "data": request.POST.dict()})
+    
+    # Extract product IDs from cart keys
+    product_ids = [key.split('-')[0] for key in cart.keys()]
+    
+    products = Product.get_Products_by_id(product_ids)
     categories = Category.get_all_category()
     parent_categories = categories.filter(parent__isnull=True)
+    
     customer = None
     if 'customer_id' in request.session:
         customer = Customer.objects.filter(id=request.session['customer_id']).first()
-    return render(request, 'cart.html', {'products': products, 'cart': cart, 'Customer': customer, 'Categories': parent_categories,})
+    
+    # Calculate total price
+    cart_items = []
+    cart_total = 0  # Initialize total variable
+    for key, quantity in cart.items():
+        product_id, color, material, size, customization, product_type, gsm = key.split('-')
+        product = next((p for p in products if p.id == int(product_id)), None)
+        if product:
+            item_total = product.price * quantity  # Calculate total for this item
+            cart_total += item_total  # Add to total
+            cart_items.append({
+                'product': product,
+                'quantity': quantity,
+                'color': color,
+                'material': material,
+                'size': size,
+                'customization': customization,
+                'type': product_type,
+                'gsm': gsm,
+                'item_total': item_total,  # Optionally store item total for each item
+            })
+    
+    return render(request, 'cart.html', {
+        'cart_items': cart_items, 
+        'products': products, 
+        'Customer': customer, 
+        'Categories': parent_categories,
+        'cart_total': cart_total  # Pass the total to the template
+    })
+
 
 
 class OrderView(View):
@@ -179,26 +215,35 @@ class checkOut(View):
         customer_id = request.session.get('customer_id')
         cart = request.session.get('cart', {})
         
-
         if not customer_id:
             return redirect(f'/login/?return_url={return_url}')
-        product_ids = [int(id) for id in cart.keys()]
-        products = Product.get_Products_by_id(product_ids)
 
-        for product in products:
-            order = Order(
-                customer=Customer(id=customer_id),
-                product=product,
-                price=product.price,
-                address=address,
-                phone=phone,
-                detail=detail,
-                quantity=cart.get(str(product.id))
-            )
-            order.placeOrder()
+        # Extract product IDs and attributes from cart keys
+        for key, quantity in cart.items():
+            product_id, color, material, size, customization, product_type, gsm = key.split('-')
+            product = Product.objects.get(id=int(product_id))
+
+            if quantity > 0:
+                order = Order(
+                    customer=Customer(id=customer_id),
+                    product=product,
+                    price=product.price,
+                    address=address,
+                    phone=phone,
+                    detail=detail,
+                    quantity=quantity,
+                    color=color,
+                    material=material,
+                    size=size,
+                    customization=customization,
+                    type=product_type,
+                    gsm=gsm,
+                )
+                order.placeOrder()
 
         request.session['cart'] = {}
         return redirect(return_url)
+
     
 
 
@@ -290,30 +335,50 @@ def cartPage(request, product_id):
     })
 
 
+
+
 def update_cart(request):
     if request.method == "POST":
+        # Get POST data
         product_id = request.POST.get('product')
         remove = request.POST.get('remove')
 
+        # Ensure product_id is provided
         if not product_id:
             return HttpResponseBadRequest("Product ID is missing")
 
+        # Get or initialize cart from the session
         cart = request.session.get('cart', {})
 
+        # Extract additional product options from the form
+        color = request.POST.get('color')
+        material = request.POST.get('material')
+        size = request.POST.get('size')
+        customization = request.POST.get('customization')
+        product_type = request.POST.get('type')
+        gsm = request.POST.get('gsm')
+
+        # Build a key to store product with options
+        product_key = f"{product_id}-{color or ''}-{material or ''}-{size or ''}-{customization or ''}-{product_type or ''}-{gsm or ''}"
+
+        # Remove the product from cart if `remove` is provided
         if remove:
-            if product_id in cart:
-                del cart[product_id]
+            if product_key in cart:
+                del cart[product_key]
         else:
-            if product_id in cart:
-                cart[product_id] += 1
-
+            if product_key in cart:
+                cart[product_key] += 1
             else:
-                cart[product_id] = 1
+                cart[product_key] = 1  # Initialize product in cart with quantity 1
 
+        # Save the updated cart in the session
         request.session['cart'] = cart
+
+        # Redirect back to the page or a fallback URL
         return redirect(request.META.get('HTTP_REFERER', '/'))
-    else:
-        return HttpResponseBadRequest("Invalid request method")
+    
+    return HttpResponseBadRequest("Invalid request method")
+
     
 
 def about(request):

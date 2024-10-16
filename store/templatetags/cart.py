@@ -4,23 +4,26 @@ register = template.Library()  # Create an instance of the Library class
 
 @register.filter(name='is_in_cart')
 def is_in_cart(product, cart):
-    if not cart:
-        return False
-    for id in cart.keys():
-        if int(id) == product.id:
+    # Extract the product ID from cart keys
+    product_id = str(product.id)  # Convert product ID to string for comparison
+    
+    # Check if any cart key starts with the product ID
+    for key in cart.keys():
+        if key.startswith(product_id + '-'):
             return True
-    # print(product,cart)
     return False
   
 @register.filter(name='cart_quantity')
 def cart_quantity(product, cart):
-    if not cart:
-        return False
-    for id in cart.keys():
-        if int(id) == product.id:
-            return cart.get(id)
-    # print(product,cart)
-    return 0
+    try:
+        # Ensure product.id is converted to a string and properly extracted from the cart key
+        product_id = str(product.id)
+        for key in cart.keys():
+            if key.startswith(product_id):
+                return cart[key]
+        return 0
+    except (ValueError, KeyError):
+        return 0
 
 
 

@@ -43,78 +43,130 @@
             <span><strong>{{ product.category }}</strong></span>
           </div>
 
-            <div>
-              <h2>Available Colors:</h2>
-                <ul>
-                  {% for color in color %}
-                    <li>{{ color }}</li>
+          <div class="cart-all">
+            <div class="option">
+              {% if color %}
+              <div>
+                <label for="color-select">Select Color:</label>
+                <select name="color" id="color-select" onchange="bindData()">
+                  <option value="">--Select Color--</option>
+                  {% for color_item in color %}
+                    <option value="{{ color_item }}">{{ color_item }}</option>
                   {% endfor %}
-                </ul>
-
-                <h2>Available Materials:</h2>
-                <ul>
-                  {% for material in material %}
-                    <li>{{ material }}</li>
+                </select>
+              </div>
+              {% endif %}
+            
+              {% if material %}
+              <div>
+                <label for="material-select">Select Material:</label>
+                <select name="material" id="material-select" onchange="bindData()">
+                  <option value="">--Select Material--</option>
+                  {% for material_item in material %}
+                    <option value="{{ material_item }}">{{ material_item }}</option>
                   {% endfor %}
-                </ul>
-
-                <h2>Available Sizes:</h2>
-                <ul>
-                  {% for size in size %}
-                    <li>{{ size }}</li>
+                </select>
+              </div>
+              {% endif %}
+            
+              {% if size %}
+              <div>
+                <label for="size-select">Select Size:</label>
+                <select name="size" id="size-select" onchange="bindData()">
+                  <option value="">--Select Size--</option>
+                  {% for size_item in size %}
+                    <option value="{{ size_item }}">{{ size_item }}</option>
                   {% endfor %}
-                </ul>
-
-                <h2>Available Customizations:</h2>
-                <ul>
-                  {% for customization in customization %}
-                    <li>{{ customization }}</li>
+                </select>
+              </div>
+              {% endif %}
+            
+              {% if customization %}
+              <div>
+                <label for="customization-select">Select Customization:</label>
+                <select name="customization" id="customization-select" onchange="bindData()">
+                  <option value="">--Select Customization--</option>
+                  {% for customization_item in customization %}
+                    <option value="{{ customization_item }}">{{ customization_item }}</option>
                   {% endfor %}
-                </ul>
-
-                <h2>Available Types:</h2>
-                <ul>
-                  {% for type in type %}
-                    <li>{{ type }}</li>
+                </select>
+              </div>
+              {% endif %}
+            
+              {% if type %}
+              <div>
+                <label for="type-select">Select Type:</label>
+                <select name="type" id="type-select" onchange="bindData()">
+                  <option value="">--Select Type--</option>
+                  {% for type_item in type %}
+                    <option value="{{ type_item }}">{{ type_item }}</option>
                   {% endfor %}
-                </ul>
-
-                <h2>Available GSMs:</h2>
-                <ul>
-                  {% for gsm in gsm %}
-                    <li>{{ gsm }}</li>
+                </select>
+              </div>
+              {% endif %}
+            
+              {% if gsms %}
+              <div>
+                <label for="gsm-select">Select GSM:</label>
+                <select name="gsm" id="gsm-select" onchange="bindData()">
+                  <option value="">--Select GSM--</option>
+                  {% for gsm_item in gsms %}
+                    <option value="{{ gsm_item }}">{{ gsm_item }}</option>
                   {% endfor %}
-                </ul>
-
+                </select>
+              </div>
+              {% endif %}
             </div>
-
+            
+            <div class="cart_1">
+              {% if product|is_in_cart:cart %}
+              <div class="row no-gutters d-flex align-items-center">
+                <div class="text-center col">{{ product|cart_quantity:request.session.cart }} in Cart</div>
+              </div>
+              {% else %}
+              <form action="{% url 'update_cart' %}" method="POST" class="btn-block">
+                {% csrf_token %}
+                <input type="hidden" name="product" value="{{ product.id }}" />
+                
+                <input type="hidden" name="color" id="hidden-color" />
+                <input type="hidden" name="material" id="hidden-material" />
+                <input type="hidden" name="size" id="hidden-size" />
+                <input type="hidden" name="customization" id="hidden-customization" />
+                <input type="hidden" name="type" id="hidden-type" />
+                <input type="hidden" name="gsm" id="hidden-gsm" />
+            
+                <input type="submit" class="btn btn-primary w-100" value="Add to Cart" />
+              </form>
+              {% endif %}
+            </div>
+          </div>
+         </div>
+        <div>
+          <h3 class="mt-4 mb-4">Product Detail</h3>
           <p class="lead">{{ product.description }}</p>
-          {% if product|is_in_cart:cart %}
-            <div class="row no-gutters d-flex align-items-center">
-              <form action="{% url 'update_cart' %}" method="POST" class="col-2 p-0 m-0">
-                {% csrf_token %}
-                <input hidden type="text" name="product" value="{{ product.id }}" />
-                <input hidden type="text" name="remove" value="{{ product.id }}" />
-                <input type="submit" class="btn btn-secondary w-100" value="-" />
-              </form>
-              <div class="text-center col">{{ product|cart_quantity:request.session.cart }} in Cart</div>
-              <form action="{% url 'update_cart' %}" method="POST" class="col-2 p-0 m-0">
-                {% csrf_token %}
-                <input hidden type="text" name="product" value="{{ product.id }}" />
-                <input type="submit" class="btn btn-secondary w-100" value="+" />
-              </form>
-            </div>
-          {% else %}
-            <form action="{% url 'update_cart' %}" method="POST" class="btn-block">
-              {% csrf_token %}
-              <input type="hidden" name="product" value="{{ product.id }}" />
-              <input type="submit" class="btn btn-primary w-100" value="Add to Cart" />
-            </form>
-          {% endif %}
         </div>
       </div>
     </div>
   </section>
+  <script>
+    function bindData() {
+      // Get selected values from dropdowns
+      const selectedColor = document.getElementById('color-select').value;
+      const selectedMaterial = document.getElementById('material-select') ? document.getElementById('material-select').value : '';
+      const selectedSize = document.getElementById('size-select') ? document.getElementById('size-select').value : '';
+      const selectedCustomization = document.getElementById('customization-select') ? document.getElementById('customization-select').value : '';
+      const selectedType = document.getElementById('type-select') ? document.getElementById('type-select').value : '';
+      const selectedGsm = document.getElementById('gsm-select') ? document.getElementById('gsm-select').value : '';
+  
+      // Bind selected values to hidden fields
+      document.getElementById('hidden-color').value = selectedColor;
+      document.getElementById('hidden-material').value = selectedMaterial;
+      document.getElementById('hidden-size').value = selectedSize;
+      document.getElementById('hidden-customization').value = selectedCustomization;
+      document.getElementById('hidden-type').value = selectedType;
+      document.getElementById('hidden-gsm').value = selectedGsm;
+    }
+  </script>
 {% endblock %}
 
 {% block footer %}

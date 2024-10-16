@@ -521,3 +521,62 @@ h6 {
 .category-container, .child-category-container {
   transition: all 0.3s ease;
 }
+
+
+/* option button that is in cart page  */
+
+  .option {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .option select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+    transition: border-color 0.3s;
+  }
+
+  .option select:hover {
+    border-color: #007bff;
+  }
+
+  .option label {
+    font-weight: bold;
+    color: #495057;
+  }
+
+  .option select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }
+
+  .carousel-item img {
+    border-radius: 10px;
+  }
+
+  .carousel-control-prev-icon,
+  .carousel-control-next-icon {
+    filter: invert(100%);
+  }
+
+  .display-5 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+  }
+
+  .btn-primary {
+    background-color: #007bff;
+    border: none;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+
+  .btn-primary:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+  }
+

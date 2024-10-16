@@ -3,6 +3,7 @@
 {% block content %}
 {% load cart %}
 
+
 <div class="container">
   <div class="border rounded p-4 m-4">
     <p class="display-4 text-center">{{ Customer.first_name }} Cart</p>
@@ -16,15 +17,12 @@
             <th scope="col">Name</th>
             <th scope="col">Price</th>
             <th scope="col">Quantity</th>
-            <th scope="col">Color</th>
-            <th scope="col">Material</th>
-            <th scope="col">Size</th>
-            <th scope="col">Customization</th>
-            <th scope="col">Type</th>
-            <th scope="col">GSM</th>
+            <th scope="col">Detail</th>
             <th scope="col">Total</th>
+            <th scope="col">Action</th> <!-- New Action column -->
           </tr>
         </thead>
+        
         <tbody>
           {% if cart_items %}
             {% for item in cart_items %}
@@ -34,25 +32,46 @@
               <td>{{ item.product.name }}</td>
               <td>{{ item.product.price | currency }}</td>
               <td>{{ item.quantity }}</td>
-
-              <!-- Conditionally render each attribute only if it exists -->
-              <td>{% if item.color %}{{ item.color }}{% else %}N/A{% endif %}</td>
-              <td>{% if item.material %}{{ item.material }}{% else %}N/A{% endif %}</td>
-              <td>{% if item.size %}{{ item.size }}{% else %}N/A{% endif %}</td>
-              <td>{% if item.customization %}{{ item.customization }}{% else %}N/A{% endif %}</td>
-              <td>{% if item.type %}{{ item.type }}{% else %}N/A{% endif %}</td>
-              <td>{% if item.gsm %}{{ item.gsm }}{% else %}N/A{% endif %}</td>
-
+        
+              <td>
+                {% if item.color or item.material or item.size or item.customization or item.type or item.gsm %}
+                  <ol>
+                    {% if item.color %}<li>Color: {{ item.color }}</li>{% endif %}
+                    {% if item.material %}<li>Material: {{ item.material }}</li>{% endif %}
+                    {% if item.size %}<li>Size: {{ item.size }}</li>{% endif %}
+                    {% if item.customization %}<li>Customization: {{ item.customization }}</li>{% endif %}
+                    {% if item.type %}<li>Type: {{ item.type }}</li>{% endif %}
+                    {% if item.gsm %}<li>GSM: {{ item.gsm }}</li>{% endif %}
+                  </ol>
+                {% endif %}
+              </td>
+        
               <td>{{ item.quantity|multiply:item.product.price|currency }}</td>
+              
+              <!-- Action column for deleting the specific item -->
+              <td>
+                <form method="POST" action="{% url 'update_cart' %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="product" value="{{ item.product.id }}">
+                  <input type="hidden" name="remove" value="true">
+                  <input type="hidden" name="color" value="{{ item.color }}">
+                  <input type="hidden" name="material" value="{{ item.material }}">
+                  <input type="hidden" name="size" value="{{ item.size }}">
+                  <input type="hidden" name="customization" value="{{ item.customization }}">
+                  <input type="hidden" name="type" value="{{ item.type }}">
+                  <input type="hidden" name="gsm" value="{{ item.gsm }}">
+                  <button type="submit" class="btn btn-danger">Remove</button>
+                </form>
+              </td>
             </tr>
             {% endfor %}
           {% else %}
             <tr>
-              <td colspan="12" class="text-center">Your cart is empty.</td>
+              <td colspan="8" class="text-center">Your cart is empty.</td>
             </tr>
           {% endif %}
         </tbody>
-        
+
         {% if cart_total %}
         <tfoot>
           <tr>
@@ -62,6 +81,10 @@
         {% endif %}
       </table>
       <hr>
+      <form method="POST" action="{% url 'delete_cart' %}" class="m-3 p-3">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger border rounded col-lg-3 float-end">Delete Cart</button>
+      </form>
       <div class="m-3 p-3">
         {% if cart_items %}
         <a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-primary border rounded col-lg-3 float-end">Check out {{ Customer.first_name }}</a>
@@ -72,6 +95,7 @@
     </div>
   </div>
 </div>
+
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -122,6 +146,7 @@
     </div>
   </div>
 </div>
+
 
 {% endblock %}
 

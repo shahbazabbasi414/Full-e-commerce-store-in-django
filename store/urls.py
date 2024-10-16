@@ -1,5 +1,5 @@
 from django.urls import path, re_path
-from .views import index, signup, login_view, logout_view, Cart, checkOut, OrderView, products , cartPage, update_cart, cartPage, about, support, contact, fabric, process, customization
+from .views import index, signup, login_view, logout_view, Cart, checkOut, OrderView, products , cartPage, update_cart, cartPage, about, support, contact, fabric, process, customization, delete_cart
 from . import views
 from store.views import OrderView
 urlpatterns = [
@@ -22,6 +22,6 @@ urlpatterns = [
     path('contact/', contact, name='contact'),
     path('support/', support, name='support'),
     path('customization/', customization, name='customization'),
-    
+    path('delete-cart/', delete_cart, name='delete_cart'),
 ]
 

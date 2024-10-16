@@ -192,6 +192,16 @@ def Cart(request):
     })
 
 
+def delete_cart(request):
+    if request.method == "POST":
+        # Clear the cart from the session
+        if 'cart' in request.session:
+            del request.session['cart']
+        return redirect(request.META.get('HTTP_REFERER', '/'))
+
+    return HttpResponseBadRequest("Invalid request method")
+
+
 
 class OrderView(View):
     def get(self, request):
